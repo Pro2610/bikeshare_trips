@@ -1,0 +1,61 @@
+SELECT *
+FROM `bigquery-public-data.austin_bikeshare.bikeshare_trips`
+LIMIT 1000;
+
+
+--General statistics
+SELECT
+  COUNT(*) AS total_trips,
+  ROUND(AVG(duration_minutes), 2) AS avg_duration,
+  COUNT(DISTINCT start_station_name) AS total_start_stations,
+  COUNT(DISTINCT end_station_name) AS total_end_stations
+FROM `bigquery-public-data.austin_bikeshare.bikeshare_trips`;
+
+
+--Dynamics of trips by month
+SELECT
+  FORMAT_DATE('%Y-%m', DATE(start_time)) AS month,
+  COUNT(*) AS trip_count
+FROM `bigquery-public-data.austin_bikeshare.bikeshare_trips`
+GROUP BY month
+ORDER BY month;
+
+--Top 10 starting stations
+SELECT
+  start_station_name,
+  COUNT(*) AS trip_count
+FROM `bigquery-public-data.austin_bikeshare.bikeshare_trips`
+GROUP BY start_station_name
+ORDER BY trip_count DESC
+LIMIT 10;
+
+--Most frequent route pairs
+SELECT
+  CONCAT(start_station_name, ' → ', end_station_name) AS route,
+  COUNT(*) AS trip_count
+FROM `bigquery-public-data.austin_bikeshare.bikeshare_trips`
+GROUP BY route
+ORDER BY trip_count DESC
+LIMIT 10;
+
+--Behavior by user type
+SELECT
+  subscriber_type,
+  COUNT(*) AS trip_count,
+  ROUND(AVG(duration_minutes), 2) AS avg_duration
+FROM `bigquery-public-data.austin_bikeshare.bikeshare_trips`
+GROUP BY subscriber_type;
+
+--Trip duration distribution
+SELECT
+  CASE
+    WHEN duration_minutes < 10 THEN '<10 min'
+    WHEN duration_minutes < 20 THEN '10–20 min'
+    WHEN duration_minutes < 30 THEN '20–30 min'
+    WHEN duration_minutes < 60 THEN '30–60 min'
+    ELSE '60+ min'
+  END AS duration_group,
+  COUNT(*) AS trip_count
+FROM `bigquery-public-data.austin_bikeshare.bikeshare_trips`
+GROUP BY duration_group
+ORDER BY trip_count DESC;
