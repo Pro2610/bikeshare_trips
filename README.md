@@ -25,3 +25,7 @@ SELECT
   COUNT(*) AS total_trips,
   ROUND(AVG(duration_minutes), 2) AS avg_duration
 FROM `bigquery-public-data.austin_bikeshare.bikeshare_trips`;
+
+
+## 📄 Data Exports
+Google Sheets with query results: https://docs.google.com/spreadsheets/d/1mtU-sdy5U5LOXHF7dPdBCL_Qs5H6OH4FXVghYn46rXA/edit?usp=sharing
